@@ -1,0 +1,132 @@
+name: CI - pytest Playwright + Allure
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install chromium
+
+      # ---------- Run tests and capture exit code ----------
+      - name: Run tests (produce Allure results) - parallel (xdist)
+        id: run-tests
+        continue-on-error: true
+        env:
+          HEADED: "false"
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
+        run: |
+          set +e
+          mkdir -p artifacts
+          # run pytest in 2 workers and write Allure raw results
+          pytest -q -n 2 --alluredir=artifacts/allure-results
+          rc=$?
+          echo "exit_code=$rc" >> $GITHUB_OUTPUT
+
+      # ---------- Install Node + Java + Allure CLI so we can generate HTML ----------
+      # these should run even if tests failed
+      - name: Set up Node.js (for allure-commandline install)
+        if: always()
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Java (OpenJDK 17)
+        if: always()
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jre-headless
+          java -version
+
+      - name: Install Allure CLI via npm
+        if: always()
+        run: |
+          npm install -g allure-commandline --unsafe-perm=true
+          allure --version
+
+      # ---------- Generate Allure report (always) ----------
+      - name: Generate Allure report (local CLI)
+        if: always()
+        run: |
+          mkdir -p artifacts/allure-report
+          allure generate artifacts/allure-results -o artifacts/allure-report --clean
+
+      # ---------- Upload artifacts (always) ----------
+      - name: Upload Allure report artifact (zip)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ github.run_id }}
+          path: artifacts/allure-report
+
+      - name: Upload videos (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos-${{ github.run_id }}
+          path: artifacts/videos
+
+      - name: Upload traces (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traces-${{ github.run_id }}
+          path: artifacts/traces
+
+      # ---------- Deploy Allure report to gh-pages (only on pushes to main) ----------
+      - name: Deploy Allure report to gh-pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./artifacts/allure-report
+          publish_branch: gh-pages
+
+      # ---------- Final step: fail job if tests failed (runs always) ----------
+      - name: Fail the job if tests failed
+        if: always()
+        run: |
+          exit_code=${{ steps.run-tests.outputs.exit_code }}
+          if [ -z "$exit_code" ]; then
+            echo "No exit_code found from tests; failing to be safe."
+            exit 1
+          fi
+          if [ "$exit_code" != "0" ]; then
+            echo "ERROR: Tests failed with exit code $exit_code. Failing job to reflect test result."
+            exit $exit_code
+          else
+            echo "All tests passed (exit code 0)."
+          fi

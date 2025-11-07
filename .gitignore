@@ -1,0 +1,23 @@
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test outputs
+artifacts/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Misc
+.env
+*.log
+dist/
+build/
