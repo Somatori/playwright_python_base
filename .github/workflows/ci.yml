@@ -46,8 +46,6 @@ jobs:
         continue-on-error: true
         env:
           HEADED: "false"
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
         run: |
           set +e
           mkdir -p artifacts

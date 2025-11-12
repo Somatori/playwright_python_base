@@ -8,12 +8,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache
 
 # Test outputs
 artifacts/
 
 # Editor / IDE
-.vscode/
 .idea/
 
 # Misc
@@ -21,3 +21,4 @@ artifacts/
 *.log
 dist/
 build/
+.DS_Store

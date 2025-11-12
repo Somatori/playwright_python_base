@@ -10,7 +10,7 @@ except Exception:
     pass
 
 # Base URL of the site under test
-BASE_URL = os.getenv("BASE_URL", "https://www.saucedemo.com/")
+BASE_URL = os.getenv("BASE_URL", "https://demoqa.com")
 
 # Browser choice: 'chromium', 'firefox', 'webkit'
 BROWSER = os.getenv("BROWSER", "chromium")
