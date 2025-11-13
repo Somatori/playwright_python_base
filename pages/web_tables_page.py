@@ -78,7 +78,3 @@ class WebTablesPage:
     def is_record_deleted(self, email_address):
         expect(self._email_cell(email_address)).not_to_be_visible()
         return True
-
-    # def is_edit_bnt_visible(self, record_id) -> bool:
-    #     expect(self._edit_btn(record_id)).not_to_be_visible()
-    #     return True
