@@ -1,0 +1,4 @@
+DEBUG: copied /home/runner/work/playwright_python_base/playwright_python_base/artifacts/videos/gw0/329de8c06954162c074700b206ef73df.webm -> artifacts/allure-results/tests_test_dynamic_properties.py__test_appearing_button_video.webm
+DEBUG: attached video.webm -> artifacts/allure-results/tests_test_dynamic_properties.py__test_appearing_button_video.webm
+DEBUG: copied artifacts/traces/gw0/tests_test_dynamic_properties.py__test_appearing_button.zip -> artifacts/allure-results/tests_test_dynamic_properties.py__test_appearing_button_trace.zip
+DEBUG: attached trace.zip -> artifacts/allure-results/tests_test_dynamic_properties.py__test_appearing_button_trace.zip
