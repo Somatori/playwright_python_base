@@ -8,7 +8,7 @@ class TemplatePage:
 
     ### ========== LOCATORS ==========
     # def _(self):
-        # return self.page.
+        # return self.page.get_by...
 
     ### ========== ACTIONS =============
     def goto(self):
