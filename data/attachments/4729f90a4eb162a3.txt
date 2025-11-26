@@ -1,4 +1,0 @@
-DEBUG: copied /home/runner/work/playwright_python_base/playwright_python_base/artifacts/videos/gw1/62cf5b5b13b5f8e856b9974ada304c7d.webm -> artifacts/allure-results/tests_test_web_tables.py__test_create_update_delete_record_video.webm
-DEBUG: attached video.webm -> artifacts/allure-results/tests_test_web_tables.py__test_create_update_delete_record_video.webm
-DEBUG: copied artifacts/traces/gw1/tests_test_web_tables.py__test_create_update_delete_record.zip -> artifacts/allure-results/tests_test_web_tables.py__test_create_update_delete_record_trace.zip
-DEBUG: attached trace.zip -> artifacts/allure-results/tests_test_web_tables.py__test_create_update_delete_record_trace.zip
