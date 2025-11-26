@@ -12,7 +12,7 @@ class DynamicPropertiesPage:
 
     ### ========== ACTIONS =============
     def goto(self):
-        self.page.goto(f"{BASE_URL}/dynamic-properties")
+        self.page.goto(f"{BASE_URL}/dynamic-properties", wait_until="domcontentloaded")
 
     def wait_for_visible_after_5_seconds_btn(self):
         self.page.wait_for_timeout(5000)

@@ -16,7 +16,7 @@ class DroppablePage:
 
     ### ========== ACTIONS =============
     def goto(self):
-        self.page.goto(f"{BASE_URL}/droppable")
+        self.page.goto(f"{BASE_URL}/droppable", wait_until="domcontentloaded")
 
     def get_droppable_area_text(self):
         return self._droppable_area().inner_text()

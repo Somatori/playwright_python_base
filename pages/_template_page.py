@@ -12,7 +12,7 @@ class TemplatePage:
 
     ### ========== ACTIONS =============
     def goto(self):
-        self.page.goto(f"{BASE_URL}/template")
+        self.page.goto(f"{BASE_URL}/template", wait_until="domcontentloaded")
 
 
     ### ========== ASSERTIONS =============

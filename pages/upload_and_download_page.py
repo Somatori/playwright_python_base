@@ -15,7 +15,7 @@ class UploadAndDownloadPage:
 
     ### ========== ACTIONS =============
     def goto(self):
-        self.page.goto(f"{BASE_URL}/upload-download")
+        self.page.goto(f"{BASE_URL}/upload-download", wait_until="domcontentloaded")
 
     def download_file(self):
         # Start waiting for the download

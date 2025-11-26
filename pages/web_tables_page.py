@@ -46,7 +46,7 @@ class WebTablesPage:
 
     ### ========== ACTIONS =============
     def goto(self):
-        self.page.goto(f"{BASE_URL}/webtables")
+        self.page.goto(f"{BASE_URL}/webtables", wait_until="domcontentloaded")
 
     def add_record(self, employee):
         self._add_btn().click()
