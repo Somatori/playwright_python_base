@@ -14,6 +14,12 @@ class AlertsPage:
     ### ========== LOCATORS ==========
     def _alert_button(self):
         return self.page.locator('#alertButton')
+    
+    def _confirm_button(self):
+        return self.page.locator('#confirmButton')
+    
+    def _confirm_message(self):
+        return self.page.locator('#confirmResult')
 
     ### ========== ACTIONS =============
     def goto(self):
@@ -57,7 +63,23 @@ class AlertsPage:
         
         return self.alert_message
 
-
+    def click_confirm_button_and_respond(self, accept_dialog: bool = True):
+        """
+        Clicks the confirm button and handles the ensuing dialog.
+        :param accept_dialog: True to accept (OK/Yes), False to dismiss (Cancel/No).
+        """
+        # Set the decision flag before the event is triggered
+        self._should_accept = accept_dialog
+        
+        # Register the handler (we use the instance method directly)
+        self.page.on("dialog", self._handle_dialog_logic)
+        
+        # Trigger the alert
+        self._confirm_button().click()
 
 
     ### ========== ASSERTIONS =============
+
+    def confirm_message_has_text(self, text):
+        expect(self._confirm_message()).to_have_text(text)
+        return True
