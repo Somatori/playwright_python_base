@@ -6,9 +6,10 @@ class AlertsPage:
     def __init__(self, page: Page):
         self.page = page
 
-        # Attributes to store dialog info
+        # Attributes for dialog window
         self.alert_message = None
         self.alert_type = None
+        self._should_accept = True 
 
     ### ========== LOCATORS ==========
     def _alert_button(self):
@@ -18,21 +19,30 @@ class AlertsPage:
     def goto(self):
         self.page.goto(f"{BASE_URL}/alerts", wait_until="domcontentloaded")
 
-    def click_the_alert_button(self):
-        # Define a function that handles the dialog and includes a pause
-        def handle_dialog(dialog: Dialog):
-            # # Add a pause to visually inspect the alert in degug-mode
-            # self.page.wait_for_timeout(5000)
+   # The central dialog handler function
+    def _handle_dialog_logic(self, dialog: Dialog):
+        # Store dialog message/type
+        self.alert_message = dialog.message
+        self.alert_type = dialog.type
+        
+        # Decide whether to accept or dismiss based on the class attribute
+        if self._should_accept:
+            dialog.accept()
+        else:
+            # Note: Dismissing an 'alert' type dialog often behaves like 'accept' in browsers
+            # This is most useful for 'confirm' or 'prompt' dialogs.
+            dialog.dismiss()
 
-            # Store the values
-            self.alert_message = dialog.message
-            self.alert_type = dialog.type
-
-            # Accept of dismiss the dialog
-            dialog.accept() # Or dialog.dismiss()
-
-        # Register the handler
-        self.page.once("dialog", handle_dialog)
+    def click_alert_button_and_respond(self, accept_dialog: bool = True):
+        """
+        Clicks the alert button and handles the ensuing dialog.
+        :param accept_dialog: True to accept (OK/Yes), False to dismiss (Cancel/No).
+        """
+        # Set the decision flag before the event is triggered
+        self._should_accept = accept_dialog
+        
+        # Register the handler (we use the instance method directly)
+        self.page.once("dialog", self._handle_dialog_logic)
         
         # Trigger the alert
         self._alert_button().click()
