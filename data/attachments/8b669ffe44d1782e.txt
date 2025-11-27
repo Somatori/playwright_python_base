@@ -1,4 +1,0 @@
-DEBUG: copied /home/runner/work/playwright_python_base/playwright_python_base/artifacts/videos/gw0/e90c0092321644585d549a5a3520287f.webm -> artifacts/allure-results/tests_test_upload_and_download.py__test_upload_video.webm
-DEBUG: attached video.webm -> artifacts/allure-results/tests_test_upload_and_download.py__test_upload_video.webm
-DEBUG: copied artifacts/traces/gw0/tests_test_upload_and_download.py__test_upload.zip -> artifacts/allure-results/tests_test_upload_and_download.py__test_upload_trace.zip
-DEBUG: attached trace.zip -> artifacts/allure-results/tests_test_upload_and_download.py__test_upload_trace.zip
