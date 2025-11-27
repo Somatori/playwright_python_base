@@ -21,3 +21,14 @@ def test_confirm(page):
 
     alerts.click_confirm_button_and_respond(accept_dialog=False) 
     assert alerts.confirm_message_has_text("You selected Cancel")
+
+
+def test_prompt(page):
+    alerts = AlertsPage(page)
+    alerts.goto()
+    
+    name = "Ivan"
+    alerts.click_prompt_button_and_respond(name, accept_dialog=True) 
+    assert alerts.get_alert_type() == "prompt"
+    assert alerts.get_alert_message() == "Please enter your name"
+    assert alerts.prompt_message_has_text(f"You entered {name}")

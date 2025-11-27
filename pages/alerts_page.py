@@ -10,6 +10,7 @@ class AlertsPage:
         self.alert_message = None
         self.alert_type = None
         self._should_accept = True 
+        self._input_text_for_prompt = None
 
     ### ========== LOCATORS ==========
     def _alert_button(self):
@@ -20,6 +21,12 @@ class AlertsPage:
     
     def _confirm_message(self):
         return self.page.locator('#confirmResult')
+    
+    def _prompt_button(self):
+        return self.page.locator('#promtButton')
+    
+    def _prompt_message(self):
+        return self.page.locator('#promptResult')
 
     ### ========== ACTIONS =============
     def goto(self):
@@ -30,13 +37,20 @@ class AlertsPage:
         # Store dialog message/type
         self.alert_message = dialog.message
         self.alert_type = dialog.type
+
+        # Check if it's a prompt and we have text to input
+        if self.alert_type == "prompt" and self._input_text_for_prompt is not None:
+            if self._should_accept:
+                # Pass the input text when accepting the prompt
+                dialog.accept(self._input_text_for_prompt)
+            else:
+                # Dismiss the prompt without entering text (or enters empty string)
+                dialog.dismiss()
         
-        # Decide whether to accept or dismiss based on the class attribute
+        # Handle regular alerts/confirms based on the class attribute
         if self._should_accept:
             dialog.accept()
         else:
-            # Note: Dismissing an 'alert' type dialog often behaves like 'accept' in browsers
-            # This is most useful for 'confirm' or 'prompt' dialogs.
             dialog.dismiss()
 
     def click_alert_button_and_respond(self, accept_dialog: bool = True):
@@ -77,9 +91,29 @@ class AlertsPage:
         # Trigger the alert
         self._confirm_button().click()
 
+    def click_prompt_button_and_respond(self, input_text: str = "", accept_dialog: bool = True):
+        """
+        Clicks the prompt button, enters text, and handles the dialog.
+        :param input_text: The text to enter into the prompt field.
+        :param accept_dialog: True to click 'OK' (accept), False to click 'Cancel' (dismiss).
+        """
+        # Set the flags before the event is triggered
+        self._should_accept = accept_dialog
+        self._input_text_for_prompt = input_text
+        
+        # Register the handler
+        self.page.once("dialog", self._handle_dialog_logic)
+        
+        # Trigger the prompt
+        self._prompt_button().click()
+
 
     ### ========== ASSERTIONS =============
 
     def confirm_message_has_text(self, text):
         expect(self._confirm_message()).to_have_text(text)
+        return True
+    
+    def prompt_message_has_text(self, text):
+        expect(self._prompt_message()).to_have_text(text)
         return True
